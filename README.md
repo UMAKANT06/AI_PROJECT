@@ -21,4 +21,7 @@ if facing error::Error: error:0308010C:digital envelope routines::unsupported
 
 use this command   :: export NODE_OPTIONS=--openssl-legacy-provider
 
+# TSP
+## Using Simulated annealing
+After cloning the repo, Install Python3, numpy and matplotlib to make the code working.
 

@@ -24,4 +24,5 @@ use this command   :: export NODE_OPTIONS=--openssl-legacy-provider
 # TSP
 ## Using Simulated annealing
 After cloning the repo, Install Python3, numpy and matplotlib to make the code working.
-
+### `sudo dnf install python3`
+### `sudo dnf install python3-numpy python3-matplotlib`

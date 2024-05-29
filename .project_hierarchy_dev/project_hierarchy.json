@@ -1,0 +1,640 @@
+{
+  "TSP/animated_visualizer.py": [
+    {
+      "type": "FunctionDef",
+      "name": "animateTSP",
+      "md_content": [
+        "\n**animateTSP**: The function of animateTSP is to animate the solution over time.\n\n**parameters**:\n\n* history: a list of solutions chosen by the algorithm\n* points: an array_like of points with coordinates\n\n**Code Description**: This code creates a plot of the TSP using Matplotlib and animates it over time. The key frames are calculated based on the length of the history list divided by 100, and the animation is initialized with the first frame. Each frame updates the solution on the graph by plotting a line through all the nodes in the history list.\n\nThis function is called by two other objects in the project: TSP/simulated_annealing.py/SimulatedAnnealing/animateSolutions and TSP/vns.py/VariableNeighborhoodSearch/animateSolutions. Both of these functions are part of a larger algorithm for solving the Traveling Salesman Problem, and they use this function to visualize the solutions found by the algorithms.\n\n**Note**: This code uses Matplotlib to create a plot of the TSP solution over time, which requires the matplotlib library to be installed. Additionally, this code assumes that the points are 2D coordinates stored in an array_like format.\n\n**Output Example**: A possible appearance of the code's return value could be a visual representation of the Traveling Salesman Problem solution animated over time."
+      ],
+      "code_start_line": 6,
+      "code_end_line": 53,
+      "params": [
+        "history",
+        "points"
+      ],
+      "have_return": true,
+      "code_content": "def animateTSP(history, points):\n    ''' animate the solution over time\n\n        Parameters\n        ----------\n        hisotry : list\n            history of the solutions chosen by the algorith\n        points: array_like\n            points with the coordinates\n    '''\n\n    ''' approx 100 frames for animation '''\n    key_frames_mult = len(history) //100\n\n    fig, ax = plt.subplots()\n\n    ''' path is a line coming through all the nodes '''\n    line, = plt.plot([], [], lw=2)\n\n    def init():\n        ''' initialize node dots on graph '''\n        x = [points[i][0] for i in history[0]]\n        y = [points[i][1] for i in history[0]]\n        plt.plot(x, y, 'co')\n\n        ''' draw axes slighty bigger  '''\n        extra_x = (max(x) - min(x)) * 0.05\n        extra_y = (max(y) - min(y)) * 0.05\n        ax.set_xlim(min(x) - extra_x, max(x) + extra_x)\n        ax.set_ylim(min(y) - extra_y, max(y) + extra_y)\n\n        '''initialize solution to be empty '''\n        line.set_data([], [])\n        return line,\n\n    def update(frame):\n        ''' for every frame update the solution on the graph '''\n        x = [points[i, 0] for i in history[frame] + [history[frame][0]]]\n        y = [points[i, 1] for i in history[frame] + [history[frame][0]]]\n        line.set_data(x, y)\n        return line\n\n    ''' animate precalulated solutions '''\n\n    ani = FuncAnimation(fig, update, frames=range(0, len(history), key_frames_mult),\n                        init_func=init, interval=3, repeat=False)\n\n    plt.show()\n",
+      "name_column": 4,
+      "item_status": "doc_upto_date",
+      "who_reference_me": [
+        "TSP/simulated_annealing.py/SimulatedAnnealing/animateSolutions(name_duplicate_version)",
+        "TSP/vns.py/VariableNeighborhoodSearch/animateSolutions(name_duplicate_version)"
+      ],
+      "reference_who": [],
+      "special_reference_type": []
+    },
+    {
+      "type": "FunctionDef",
+      "name": "init",
+      "md_content": [
+        "\n**init**: This is an initialization function for creating visualizations of TSP solutions using Matplotlib. \n\n**Parameters**:\n* `history`: A list containing the history of the TSP problem being solved.\n* `points`: A dictionary with the coordinates of the points in the graph, where each point has a unique key.\n* `line`: The line object for plotting the solution path.\n\n**Code Description**:\nThe function initializes node dots on the graph using the `x` and `y` lists, which are generated from the coordinates of the points in the `points` dictionary. It then plots the points as a circle (`'co'`), sets the axes limits to be slightly bigger than the range of the x- and y-coordinates, initializes the solution line to an empty list, and returns it.\n\n**Note**: The function assumes that the `history` parameter contains at least one element, which corresponds to the initial state of the TSP problem.\n\n**Output Example**:\n```python\nhistory = [\n    [0, 1, 2, 3, 4], # initial state\n    [1, 2, 3, 4, 5], # first step\n    [2, 3, 4, 5, 6] # second step\n]\npoints = {\n    0: (0, 0),\n    1: (1, 1),\n    2: (2, 2),\n    3: (3, 3),\n    4: (4, 4),\n    5: (5, 5),\n    6: (6, 6)\n}\nline = None # initial value\n\n# plot the TSP solution path using init() function\nline = init(history, points)\n```\nIn this example, the `init()` function is called with the `history` list and `points` dictionary as input. The output is a line object that can be used to visualize the solution path of the TSP problem."
+      ],
+      "code_start_line": 25,
+      "code_end_line": 39,
+      "params": [],
+      "have_return": true,
+      "code_content": "    def init():\n        ''' initialize node dots on graph '''\n        x = [points[i][0] for i in history[0]]\n        y = [points[i][1] for i in history[0]]\n        plt.plot(x, y, 'co')\n\n        ''' draw axes slighty bigger  '''\n        extra_x = (max(x) - min(x)) * 0.05\n        extra_y = (max(y) - min(y)) * 0.05\n        ax.set_xlim(min(x) - extra_x, max(x) + extra_x)\n        ax.set_ylim(min(y) - extra_y, max(y) + extra_y)\n\n        '''initialize solution to be empty '''\n        line.set_data([], [])\n        return line,\n",
+      "name_column": 8,
+      "item_status": "doc_upto_date",
+      "who_reference_me": [],
+      "reference_who": [],
+      "special_reference_type": []
+    },
+    {
+      "type": "FunctionDef",
+      "name": "update",
+      "md_content": [
+        "\n**update**: The function of update is to update the solution on the graph for every frame.\n\n**parameters**: \n\n* frame: The frame number.\n\n**Code Description**: This function updates the solution on the graph for each frame by using the history of points in a TSP problem. It first generates a list of x-coordinates and y-coordinates for the line representing the solution, then sets the data for the line using the matplotlib library's set_data() method. Finally, it returns the updated line object.\n\n**Note**: This function assumes that the history variable contains the previous points in the TSP problem. It also assumes that the line object has already been created and initialized.\n\n**Output Example**: A possible appearance of the code's return value could be a matplotlib line object with updated data for the solution on the graph."
+      ],
+      "code_start_line": 41,
+      "code_end_line": 46,
+      "params": [
+        "frame"
+      ],
+      "have_return": true,
+      "code_content": "    def update(frame):\n        ''' for every frame update the solution on the graph '''\n        x = [points[i, 0] for i in history[frame] + [history[frame][0]]]\n        y = [points[i, 1] for i in history[frame] + [history[frame][0]]]\n        line.set_data(x, y)\n        return line\n",
+      "name_column": 8,
+      "item_status": "doc_upto_date",
+      "who_reference_me": [],
+      "reference_who": [],
+      "special_reference_type": []
+    }
+  ],
+  "TSP/nodes_generator.py": [
+    {
+      "type": "ClassDef",
+      "name": "NodeGenerator",
+      "md_content": [
+        "\n**NodeGenerator Class Documentation**\n\nThe NodeGenerator class is a Python class that generates random nodes (i.e., x-y coordinates) within a given rectangle, specified by width and height parameters. The generated nodes are stored in a numpy array with two columns, representing the x-coordinates and y-coordinates of each node, respectively.\n\n**Function**: The NodeGenerator class has one primary function, which is to generate random nodes within a given rectangle. This function is used by other classes in the project that require generating nodes for their respective purposes.\n\n**Attributes**:\n\n* width: The width of the rectangle where the nodes will be generated. It is an integer value.\n* height: The height of the rectangle where the nodes will be generated. It is an integer value.\n* nodesNumber: The number of nodes that need to be generated. It is also an integer value.\n\n**Code Description**: The NodeGenerator class uses NumPy's random.randint() function to generate random x-coordinates and y-coordinates within the specified rectangle. The generated nodes are then returned as a numpy array with two columns, representing the x-coordinates and y-coordinates of each node, respectively.\n\n**Note**: This class is designed to be used in conjunction with other classes that require generating nodes for their respective purposes. It is not intended for standalone use.\n\n**Output Example**: A possible appearance of the code's return value could be a numpy array with two columns, representing x-coordinates and y-coordinates of generated nodes, such as [[34, 85], [12, 67], ...].\n\n**Caller Relationship**: This class is called by other classes in the project that require generating nodes for their respective purposes. For example, TSP/tsp_sa.py and TSP/tsp_vns.py both use NodeGenerator to generate nodes for their respective TSP algorithms.\n\nIn conclusion, the NodeGenerator class provides a simple way to generate random nodes within a given rectangle for use in other classes in the project that require generating nodes for their respective purposes. It is not intended for standalone use and should be used in conjunction with other classes that require generating nodes for their respective purposes."
+      ],
+      "code_start_line": 5,
+      "code_end_line": 15,
+      "params": [],
+      "have_return": true,
+      "code_content": "class NodeGenerator:\n    def __init__(self, width, height, nodesNumber):\n        self.width = width\n        self.height = height\n        self.nodesNumber = nodesNumber\n\n    def generate(self):\n        xs = np.random.randint(self.width, size=self.nodesNumber)\n        ys = np.random.randint(self.height, size=self.nodesNumber)\n\n        return np.column_stack((xs, ys))\n",
+      "name_column": 6,
+      "item_status": "doc_upto_date",
+      "who_reference_me": [
+        "TSP/tsp_sa.py(name_duplicate_version)",
+        "TSP/tsp_sa.py/main(name_duplicate_version)",
+        "TSP/tsp_vns.py(name_duplicate_version)",
+        "TSP/tsp_vns.py/main(name_duplicate_version)"
+      ],
+      "reference_who": [],
+      "special_reference_type": []
+    },
+    {
+      "type": "FunctionDef",
+      "name": "__init__",
+      "md_content": [
+        "\n**__init__: Initialize NodeGenerator Object**\n\nThe `__init__` function is used to initialize a `NodeGenerator` object. It takes three parameters: `width`, `height`, and `nodesNumber`.\n\n* `width`: The width of the generated nodes.\n* `height`: The height of the generated nodes.\n* `nodesNumber`: The number of nodes to be generated.\n\nThe function sets these values as attributes of the `NodeGenerator` object, which can then be used later in the program.\n\n**Code Description:** The `__init__` function is a constructor method that is called when an instance of the `NodeGenerator` class is created. It initializes the object with the necessary parameters and sets them as attributes so they can be used later in the program.\n\n**Note:** It's important to note that the `NodeGenerator` class is responsible for generating a list of nodes based on the given width, height, and number of nodes. The `__init__` function initializes the object with these parameters, which are then used by other methods in the class to generate the desired list of nodes."
+      ],
+      "code_start_line": 6,
+      "code_end_line": 9,
+      "params": [
+        "self",
+        "width",
+        "height",
+        "nodesNumber"
+      ],
+      "have_return": false,
+      "code_content": "    def __init__(self, width, height, nodesNumber):\n        self.width = width\n        self.height = height\n        self.nodesNumber = nodesNumber\n",
+      "name_column": 8,
+      "item_status": "doc_upto_date",
+      "who_reference_me": [],
+      "reference_who": [],
+      "special_reference_type": []
+    },
+    {
+      "type": "FunctionDef",
+      "name": "generate",
+      "md_content": [
+        "\n**generate**: The function of generate is to randomly generate node coordinates within the given bounds of the graph.\n\n**parameters**:\n\n* self (NodeGenerator): An instance of the NodeGenerator class, used to generate nodes with specific properties.\n* width (int): The maximum value that x-coordinates can take.\n* height (int): The maximum value that y-coordinates can take.\n* nodesNumber (int): The number of nodes to be generated.\n\n**Code Description**: The code uses NumPy's random module to generate node coordinates within the given bounds. Specifically, it generates a list of x-coordinates and a list of y-coordinates separately, each with a length equal to nodesNumber. Then, it stacks these two lists into a single array using np.column_stack(). The resulting array contains the coordinates of the generated nodes.\n\nThe function is called by the main functions in TSP/tsp_sa.py and TSP/tsp_vns.py, which are respectively used for simulated annealing and vehicle routing problems to solve the traveling salesman problem. The output of this function serves as the initial population of nodes for these algorithms.\n\n**Note**: This function assumes that the width and height of the graph are both positive integers, and that the nodesNumber parameter is also a positive integer. If any of these conditions are not met, the generated coordinates may be invalid or cause errors in the calling code. Therefore, it is important to ensure that the parameters are properly validated before calling this function.\n\n**Output Example**: A possible appearance of the code's return value could be a 2D array containing several rows and columns of random node coordinates within the given bounds. For example, a 3x2 array with values like:\n```python\narray([[50, 89], [16, 47], [75, 12]])\n```\nThis output represents three nodes with x-coordinates between 0 and 100 and y-coordinates between 0 and 100."
+      ],
+      "code_start_line": 11,
+      "code_end_line": 15,
+      "params": [
+        "self"
+      ],
+      "have_return": true,
+      "code_content": "    def generate(self):\n        xs = np.random.randint(self.width, size=self.nodesNumber)\n        ys = np.random.randint(self.height, size=self.nodesNumber)\n\n        return np.column_stack((xs, ys))\n",
+      "name_column": 8,
+      "item_status": "doc_upto_date",
+      "who_reference_me": [
+        "TSP/tsp_sa.py/main(name_duplicate_version)",
+        "TSP/tsp_vns.py/main(name_duplicate_version)"
+      ],
+      "reference_who": [],
+      "special_reference_type": []
+    }
+  ],
+  "TSP/simulated_annealing.py": [
+    {
+      "type": "ClassDef",
+      "name": "SimulatedAnnealing",
+      "md_content": [
+        "\n**SimulatedAnnealing**: The function of SimulatedAnnealing is an optimization algorithm that uses a combination of simulated annealing and iterative local search to find the minimum weight solution for the Traveling Salesman Problem (TSP).\n\n**Attributes**:\n\n* `coords`: a list of coordinates of all points in the TSP instance.\n* `temp`: initial temperature parameter used in simulated annealing algorithm.\n* `alpha`: cooling rate parameter used in simulated annealing algorithm.\n* `stopping_temp`: stopping temperature parameter used in simulated annealing algorithm to determine when to stop iterating.\n* `stopping_iter`: stopping iteration parameter used in simulated annealing algorithm to determine when to stop iterating.\n* `iteration`: current iteration number of the algorithm.\n* `dist_matrix`: a distance matrix of all points in the TSP instance.\n* `curr_solution`: the current solution (a permutation of point indices) being optimized by the algorithm.\n* `best_solution`: the best solution found so far, which is the minimum weight solution for the TSP instance.\n* `solution_history`: a list containing all solutions found during the optimization process.\n* `weight_list`: a list containing all weights of the solutions found during the optimization process.\n\n**Code Description**: This class implements the simulated annealing algorithm to optimize the Traveling Salesman Problem (TSP) instance. The algorithm iteratively generates new candidate solutions by swapping adjacent points in the current solution, and evaluates their fitness using a nearest neighbor heuristic. The algorithm then determines whether to accept or reject the new candidate solution based on its weight and an acceptance probability determined by the temperature parameter. If accepted, the new solution becomes the current solution, and the algorithm updates the best solution if necessary. The algorithm iterates until a stopping criterion is met, such as reaching a maximum number of iterations or achieving a minimum weight solution.\n\nThe `animateSolutions` function creates an animation visualizing the optimization process by displaying the solution history for each iteration. The `plotLearning` function creates a line plot visualizing the learning curve of the algorithm, showing the evolution of the best solution's weight over time.\n\n**Note**: This class is called from the `main` method in the TSP instance to perform optimization and create the animation and line plots. The output of this class is a minimum weight solution for the TSP instance.\n\n**Output Example**: A possible appearance of the code's return value could be a list of coordinates representing the optimized tour (minimum weight solution) for the TSP instance, such as `[(x1, y1), (x2, y2), ..., (xn, yn)]`, where each coordinate is a point in the TSP instance. The output could also include an animation visualizing the optimization process and a line plot visualizing the learning curve of the algorithm."
+      ],
+      "code_start_line": 8,
+      "code_end_line": 81,
+      "params": [],
+      "have_return": true,
+      "code_content": "class SimulatedAnnealing:\n    def __init__(self, coords, temp, alpha, stopping_temp, stopping_iter):\n\n        self.coords = coords\n        self.sample_size = len(coords)\n        self.temp = temp\n        self.alpha = alpha\n        self.stopping_temp = stopping_temp\n        self.stopping_iter = stopping_iter\n        self.iteration = 1\n\n        self.dist_matrix = tsp_utils.vectorToDistMatrix(coords)\n        self.curr_solution = tsp_utils.nearestNeighbourSolution(self.dist_matrix)\n        self.best_solution = self.curr_solution\n\n        self.solution_history = [self.curr_solution]\n\n        self.curr_weight = self.weight(self.curr_solution)\n        self.initial_weight = self.curr_weight\n        self.min_weight = self.curr_weight\n\n        self.weight_list = [self.curr_weight]\n\n        print('Intial weight: ', self.curr_weight)\n\n    def weight(self, sol):\n        return sum([self.dist_matrix[i, j] for i, j in zip(sol, sol[1:] + [sol[0]])])\n\n    def acceptance_probability(self, candidate_weight):\n        return math.exp(-abs(candidate_weight - self.curr_weight) / self.temp)\n\n    def accept(self, candidate):\n        candidate_weight = self.weight(candidate)\n        if candidate_weight < self.curr_weight:\n            self.curr_weight = candidate_weight\n            self.curr_solution = candidate\n            if candidate_weight < self.min_weight:\n                self.min_weight = candidate_weight\n                self.best_solution = candidate\n\n        else:\n            if random.random() < self.acceptance_probability(candidate_weight):\n                self.curr_weight = candidate_weight\n                self.curr_solution = candidate\n\n    def anneal(self):\n        while self.temp >= self.stopping_temp and self.iteration < self.stopping_iter:\n            candidate = list(self.curr_solution)\n            l = random.randint(2, self.sample_size - 1)\n            i = random.randint(0, self.sample_size - l)\n\n            candidate[i: (i + l)] = reversed(candidate[i: (i + l)])\n\n            self.accept(candidate)\n            self.temp *= self.alpha\n            self.iteration += 1\n            self.weight_list.append(self.curr_weight)\n            self.solution_history.append(self.curr_solution)\n        print('----------------using simulated annealing------------------')\n        print('Minimum weight: ', self.min_weight)\n        print('Improvement: ',\n              round((self.initial_weight - self.min_weight) / (self.initial_weight), 4) * 100, '%')\n\n    def animateSolutions(self):\n        animated_visualizer.animateTSP(self.solution_history, self.coords)\n\n    def plotLearning(self):\n        plt.plot([i for i in range(len(self.weight_list))], self.weight_list)\n        line_init = plt.axhline(y=self.initial_weight, color='r', linestyle='--')\n        line_min = plt.axhline(y=self.min_weight, color='g', linestyle='--')\n        plt.legend([line_init, line_min], ['Initial weight', 'Optimized weight'])\n        plt.ylabel('Weight')\n        plt.xlabel('Iteration')\n        plt.show()\n",
+      "name_column": 6,
+      "item_status": "doc_upto_date",
+      "who_reference_me": [
+        "TSP/tsp_sa.py(name_duplicate_version)",
+        "TSP/tsp_sa.py/main(name_duplicate_version)"
+      ],
+      "reference_who": [],
+      "special_reference_type": []
+    },
+    {
+      "type": "FunctionDef",
+      "name": "__init__",
+      "md_content": [
+        "**TSP/tsp_utils.py/distanceMatrixFunction**\n\nThe function of `distanceMatrixFunction` is to create a distance matrix from a coordinate list.\n\n**parameters**:\n\n* coords: A list of lists, where each inner list represents a 2D point and its corresponding distance with other points in the coordinate list.\n\n**Code Description**: The function iterates through the input `coords` to calculate the Euclidean distance between all possible pairs of points. Then, it creates a square matrix where each element represents the distance between the corresponding points in the coordinate list.\n\nThis function is used by other classes in the project, such as the SimulatedAnnealing class and the VariableNeighborhoodSearch class, to calculate the initial solution for the simulated annealing algorithm and the variable neighborhood search algorithm, respectively. The nearest neighbor strategy uses this distance matrix to compute the initial solution.\n\nThe relationship between this function and its callers in the project can be seen as follows:\n\n* In TSP/simulated_annealing.py, the SimulatedAnnealing class calls distanceMatrixFunction to create a distance matrix for simulated annealing algorithm.\n* In TSP/vns.py, the VariableNeighborhoodSearch class also calls distanceMatrixFunction to create a distance matrix for variable neighborhood search algorithm.\n* In TSP/nearest_neighbour.py, nearestNeighbourSolution function uses distanceMatrixFunction to compute the initial solution (nearest neighbor strategy) using the given distance matrix.\n\n**Note**: This function uses the math library's sqrt() method to calculate the Euclidean distance between two points and the random module's randrange() method to select a random node from the coordinate list as the starting point for the tour. The nodes_to_visit list is used to keep track of the remaining nodes that have not been visited yet, and the nearest_node variable is used to store the current nearest neighbor of the previous node.\n\n**Output Example**: A sample return value could be a square matrix where each element represents the distance between the corresponding points in the coordinate list. For example, if the input coordinate list was [[1, 2], [3, 4], [5, 6]], a possible return value could be [[0, 2, 4], [2, 0, 6], [4, 6, 0]].\n\n==================\n\n\nPlease generate a detailed explanation document for this object based on the code of the target object itself .\n\nPlease write out the function of this Function in bold plain text, followed by a detailed analysis in plain text (including all details), in language English to serve as the documentation for this part of the code.\n\nThe standard format is as follows:\n\n**__init__**: The function of __init__ is XXX. (Only code name and one sentence function description are required)\n**parameters**: The parameters of this Function.\n· parameter1: XXX\n· parameter2: XXX\n· ...\n**Code Description**: The description of this Function.\n(Detailed and CERTAIN code analysis and description...And please include the relationship with its callees in the project from a functional perspective.)\n**Note**: Points to note about the use of the code\n"
+      ],
+      "code_start_line": 9,
+      "code_end_line": 31,
+      "params": [
+        "self",
+        "coords",
+        "temp",
+        "alpha",
+        "stopping_temp",
+        "stopping_iter"
+      ],
+      "have_return": false,
+      "code_content": "    def __init__(self, coords, temp, alpha, stopping_temp, stopping_iter):\n\n        self.coords = coords\n        self.sample_size = len(coords)\n        self.temp = temp\n        self.alpha = alpha\n        self.stopping_temp = stopping_temp\n        self.stopping_iter = stopping_iter\n        self.iteration = 1\n\n        self.dist_matrix = tsp_utils.vectorToDistMatrix(coords)\n        self.curr_solution = tsp_utils.nearestNeighbourSolution(self.dist_matrix)\n        self.best_solution = self.curr_solution\n\n        self.solution_history = [self.curr_solution]\n\n        self.curr_weight = self.weight(self.curr_solution)\n        self.initial_weight = self.curr_weight\n        self.min_weight = self.curr_weight\n\n        self.weight_list = [self.curr_weight]\n\n        print('Intial weight: ', self.curr_weight)\n",
+      "name_column": 8,
+      "item_status": "doc_upto_date",
+      "who_reference_me": [],
+      "reference_who": [
+        "TSP/simulated_annealing.py/SimulatedAnnealing/weight(name_duplicate_version)",
+        "TSP/tsp_utils.py/vectorToDistMatrix(name_duplicate_version)",
+        "TSP/tsp_utils.py/nearestNeighbourSolution(name_duplicate_version)"
+      ],
+      "special_reference_type": [
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "type": "FunctionDef",
+      "name": "weight",
+      "md_content": [
+        "\n**weight**: The function of weight is to calculate the total distance between two cities in a TSP (Traveling Salesman Problem) instance using the provided dist_matrix.\n\n**Parameters**: \n\n* self: An instance of the SimulatedAnnealing class.\n* sol: A list representing the current solution, where each element is an index of a city in the TSP instance.\n\n**Code Description**: The weight function takes a current solution (sol) and calculates its total distance using the dist_matrix provided during initialization of SimulatedAnnealing class. The formula used to calculate the distance between two cities is `sum([self.dist_matrix[i, j] for i, j in zip(sol, sol[1:] + [sol[0]])])`. This function returns the total distance as a float value.\n\n**Note**: The dist_matrix must be provided during initialization of SimulatedAnnealing class to calculate the weight of each solution.\n\n**Output Example**: A possible return value of this function could be 15.0, which represents the total distance between the cities in a TSP instance where the first city is connected to the last city with a distance of 5 and all other cities are connected in a circular manner."
+      ],
+      "code_start_line": 33,
+      "code_end_line": 34,
+      "params": [
+        "self",
+        "sol"
+      ],
+      "have_return": true,
+      "code_content": "    def weight(self, sol):\n        return sum([self.dist_matrix[i, j] for i, j in zip(sol, sol[1:] + [sol[0]])])\n",
+      "name_column": 8,
+      "item_status": "doc_upto_date",
+      "who_reference_me": [
+        "TSP/simulated_annealing.py/SimulatedAnnealing/__init__(name_duplicate_version)",
+        "TSP/simulated_annealing.py/SimulatedAnnealing/accept(name_duplicate_version)"
+      ],
+      "reference_who": [],
+      "special_reference_type": []
+    },
+    {
+      "type": "FunctionDef",
+      "name": "acceptance_probability",
+      "md_content": [
+        "\n**acceptance_probability**: The function of `acceptance_probability` is to calculate the acceptance probability for a given candidate solution based on the Simulated Annealing algorithm. It takes one parameter, `candidate_weight`, which represents the weight of the candidate solution, and returns a value between 0 and 1 that represents the probability of accepting the candidate solution.\n\n**Parameters**:\n\n* `candidate_weight`: The weight of the candidate solution to be evaluated.\n\n**Code Description**: This function uses the absolute difference between the weight of the candidate solution and the current temperature (self.temp) to calculate the acceptance probability. It then applies the exponential function to this value to ensure that the probability decreases as the difference between the weights increases, providing a more balanced search space for the Simulated Annealing algorithm.\n\nThe relationship with its callers in the project is that it is used by the `SimulatedAnnealing` class to determine whether or not to accept a given candidate solution during the simulation. The class uses this function as part of its optimization process, and it is called repeatedly with different candidate solutions until an acceptable solution is found or the maximum number of iterations is reached.\n\n**Note**: This function relies on the `self.temp` attribute being set to a value before calling it, as it uses this value to calculate the acceptance probability. It also assumes that the `candidate_weight` parameter is a valid weight value that can be used in mathematical operations with self.curr_weight.\n\n**Output Example**: A possible output for this function might be 0.5 if the weight of the candidate solution is equal to half of the current temperature, and a probability of 0.9 if the weight is three times the current temperature. The exact value will depend on the specific values used as input."
+      ],
+      "code_start_line": 36,
+      "code_end_line": 37,
+      "params": [
+        "self",
+        "candidate_weight"
+      ],
+      "have_return": true,
+      "code_content": "    def acceptance_probability(self, candidate_weight):\n        return math.exp(-abs(candidate_weight - self.curr_weight) / self.temp)\n",
+      "name_column": 8,
+      "item_status": "doc_upto_date",
+      "who_reference_me": [
+        "TSP/simulated_annealing.py/SimulatedAnnealing/accept(name_duplicate_version)"
+      ],
+      "reference_who": [],
+      "special_reference_type": []
+    },
+    {
+      "type": "FunctionDef",
+      "name": "accept",
+      "md_content": [
+        "\n**accept**: The function of `accept` is to evaluate the weight of a candidate solution and determine whether or not to accept it based on the Simulated Annealing algorithm's acceptance probability.\n\n**parameters**:\n\n* `candidate_weight`: The weight of the candidate solution to be evaluated.\n\n**Code Description**: This function takes a current solution (sol) and calculates its total distance using the dist_matrix provided during initialization of SimulatedAnnealing class. The formula used to calculate the distance between two cities is `sum([self.dist_matrix[i, j] for i, j in zip(sol, sol[1:] + [sol[0]])])`. This function returns a value between 0 and 1 that represents the probability of accepting the candidate solution.\n\n**Note**: The dist_matrix must be provided during initialization of SimulatedAnnealing class to calculate the weight of each solution. This function relies on the `self.temp` attribute being set to a value before calling it, as it uses this value to calculate the acceptance probability. It also assumes that the `candidate_weight` parameter is a valid weight value that can be used in mathematical operations with self.curr_weight.\n\n**Output Example**: A possible output for this function might be 0.5 if the weight of the candidate solution is equal to half of the current temperature, and a probability of 0.9 if the weight is three times the current temperature. The exact value will depend on the specific values used as input."
+      ],
+      "code_start_line": 39,
+      "code_end_line": 51,
+      "params": [
+        "self",
+        "candidate"
+      ],
+      "have_return": false,
+      "code_content": "    def accept(self, candidate):\n        candidate_weight = self.weight(candidate)\n        if candidate_weight < self.curr_weight:\n            self.curr_weight = candidate_weight\n            self.curr_solution = candidate\n            if candidate_weight < self.min_weight:\n                self.min_weight = candidate_weight\n                self.best_solution = candidate\n\n        else:\n            if random.random() < self.acceptance_probability(candidate_weight):\n                self.curr_weight = candidate_weight\n                self.curr_solution = candidate\n",
+      "name_column": 8,
+      "item_status": "doc_upto_date",
+      "who_reference_me": [
+        "TSP/simulated_annealing.py/SimulatedAnnealing/anneal(name_duplicate_version)"
+      ],
+      "reference_who": [
+        "TSP/simulated_annealing.py/SimulatedAnnealing/weight(name_duplicate_version)",
+        "TSP/simulated_annealing.py/SimulatedAnnealing/acceptance_probability(name_duplicate_version)"
+      ],
+      "special_reference_type": [
+        false,
+        false
+      ]
+    },
+    {
+      "type": "FunctionDef",
+      "name": "anneal",
+      "md_content": [
+        "\n**anneal**: The function of anneal is to perform simulated annealing on a given solution, which involves iteratively applying the temperature schedule and neighboring solutions accepted based on their weights.\n\n**parameters**: \n\n* `self`: A reference to the current SimulatedAnnealing object.\n\n**Code Description**: This function uses the Simulated Annealing algorithm's acceptance probability to determine whether or not to accept a given candidate solution as the next solution based on its weight. The temperature schedule is also applied to gradually reduce the current temperature over time, which allows for more diverse and exploratory solutions to be accepted. The function also keeps track of the minimum weight achieved so far and updates the current solution accordingly.\n\n**Note**: This function relies on the `dist_matrix` attribute being set during initialization of SimulatedAnnealing class and assumes that the input candidate solution is a valid weight value that can be used in mathematical operations with self.curr_weight. The output example provided is just one possible outcome, and the exact value will depend on the specific values used as input."
+      ],
+      "code_start_line": 53,
+      "code_end_line": 69,
+      "params": [
+        "self"
+      ],
+      "have_return": false,
+      "code_content": "    def anneal(self):\n        while self.temp >= self.stopping_temp and self.iteration < self.stopping_iter:\n            candidate = list(self.curr_solution)\n            l = random.randint(2, self.sample_size - 1)\n            i = random.randint(0, self.sample_size - l)\n\n            candidate[i: (i + l)] = reversed(candidate[i: (i + l)])\n\n            self.accept(candidate)\n            self.temp *= self.alpha\n            self.iteration += 1\n            self.weight_list.append(self.curr_weight)\n            self.solution_history.append(self.curr_solution)\n        print('----------------using simulated annealing------------------')\n        print('Minimum weight: ', self.min_weight)\n        print('Improvement: ',\n              round((self.initial_weight - self.min_weight) / (self.initial_weight), 4) * 100, '%')\n",
+      "name_column": 8,
+      "item_status": "doc_upto_date",
+      "who_reference_me": [
+        "TSP/tsp_sa.py/main(name_duplicate_version)"
+      ],
+      "reference_who": [
+        "TSP/simulated_annealing.py/SimulatedAnnealing/accept(name_duplicate_version)"
+      ],
+      "special_reference_type": [
+        false
+      ]
+    },
+    {
+      "type": "FunctionDef",
+      "name": "animateSolutions",
+      "md_content": [
+        "\n**animateSolutions**: The function of animateSolutions is to animate the solution over time.\n\n**Parameters**:\n\n* history: a list of solutions chosen by the algorithm\n* points: an array_like of points with coordinates\n\n**Code Description**: This code creates a plot of the TSP using Matplotlib and animates it over time. The key frames are calculated based on the length of the history list divided by 100, and the animation is initialized with the first frame. Each frame updates the solution on the graph by plotting a line through all the nodes in the history list.\n\nThis function is called by two other objects in the project: TSP/simulated_annealing.py/SimulatedAnnealing/animateSolutions and TSP/vns.py/VariableNeighborhoodSearch/animateSolutions. Both of these functions are part of a larger algorithm for solving the Traveling Salesman Problem, and they use this function to visualize the solutions found by the algorithms.\n\n**Note**: This code uses Matplotlib to create a plot of the TSP solution over time, which requires the matplotlib library to be installed. Additionally, this code assumes that the points are 2D coordinates stored in an array_like format.\n\n**Output Example**: A possible appearance of the code's return value could be a visual representation of the Traveling Salesman Problem solution animated over time."
+      ],
+      "code_start_line": 71,
+      "code_end_line": 72,
+      "params": [
+        "self"
+      ],
+      "have_return": false,
+      "code_content": "    def animateSolutions(self):\n        animated_visualizer.animateTSP(self.solution_history, self.coords)\n",
+      "name_column": 8,
+      "item_status": "doc_upto_date",
+      "who_reference_me": [
+        "TSP/tsp_sa.py/main(name_duplicate_version)"
+      ],
+      "reference_who": [
+        "TSP/animated_visualizer.py/animateTSP(name_duplicate_version)"
+      ],
+      "special_reference_type": [
+        false
+      ]
+    },
+    {
+      "type": "FunctionDef",
+      "name": "plotLearning",
+      "md_content": [
+        "\n**plotLearning**: The function of plotLearning is to plot the learning process of the Simulated Annealing algorithm.\n\n**parameters**:\n\n* self (TSP): The instance of TSP class.\n\n**Code Description**: This function uses the matplotlib library to plot the learning process of the Simulated Annealing algorithm. It first plots the weight list of the instance, then adds an initial weight line and a minimum weight line using the plt.axhline() method. Finally, it labels the y-axis as \"Weight\" and the x-axis as \"Iteration\". The plt.show() method is used to display the plot.\n\nThis function is called by the main function in TSP/tsp_sa.py/main, which is responsible for running the Simulated Annealing algorithm on a given instance of TSP. By calling this function, the user can visualize the learning process of the algorithm and observe its convergence to the minimum weight solution.\n\n**Note**: This function requires the matplotlib library to be installed in order to work properly. It is recommended to use the latest version of matplotlib for best results."
+      ],
+      "code_start_line": 74,
+      "code_end_line": 81,
+      "params": [
+        "self"
+      ],
+      "have_return": false,
+      "code_content": "    def plotLearning(self):\n        plt.plot([i for i in range(len(self.weight_list))], self.weight_list)\n        line_init = plt.axhline(y=self.initial_weight, color='r', linestyle='--')\n        line_min = plt.axhline(y=self.min_weight, color='g', linestyle='--')\n        plt.legend([line_init, line_min], ['Initial weight', 'Optimized weight'])\n        plt.ylabel('Weight')\n        plt.xlabel('Iteration')\n        plt.show()\n",
+      "name_column": 8,
+      "item_status": "doc_upto_date",
+      "who_reference_me": [
+        "TSP/tsp_sa.py/main(name_duplicate_version)"
+      ],
+      "reference_who": [],
+      "special_reference_type": []
+    }
+  ],
+  "TSP/tsp_sa.py": [
+    {
+      "type": "FunctionDef",
+      "name": "main",
+      "md_content": [
+        "\n==========\nobj: TSP/simulated_annealing.py/SimulatedAnnealing/animateSolutions\nDocument: \n\n**animateSolutions**: The function of animateSolutions is to animate the solution over time.\n\n**Parameters**:\n\n* history: a list of solutions chosen by the algorithm\n* points: an array_like of points with coordinates\n\n**Code Description**: This code creates a plot of the TSP using Matplotlib and animates it over time. The key frames are calculated based on the length of the history list divided by 100, and the animation is initialized with the first frame. Each frame updates the solution on the graph by plotting a line through all the nodes in the history list.\n\nThis function is called by two other objects in the project: TSP/simulated_annealing.py/SimulatedAnnealing/animateSolutions and TSP/vns.py/VariableNeighborhoodSearch/animateSolutions. Both of these functions are part of a larger algorithm for solving the Traveling Salesman Problem, and they use this function to visualize the solutions found by the algorithms.\n\n**Note**: This code uses Matplotlib to create a plot of the TSP solution over time, which requires the matplotlib library to be installed. Additionally, this code assumes that the points are 2D coordinates stored in an array_like format.\n\n**Output Example**: A possible appearance of the code's return value could be a visual representation of the Traveling Salesman Problem solution animated over time.\n==========\n"
+      ],
+      "code_start_line": 4,
+      "code_end_line": 28,
+      "params": [],
+      "have_return": false,
+      "code_content": "def main():\n    '''set the simulated annealing algorithm params'''\n    temp = 1000\n    stopping_temp = 0.00000001\n    alpha = 0.9995\n    stopping_iter = 10000000\n    '''set the dimensions of the grid'''\n    size_width = 200\n    size_height = 200\n\n    '''set the number of nodes'''\n    population_size = 70\n\n    '''generate random list of nodes'''\n    nodes = NodeGenerator(size_width, size_height, population_size).generate()\n\n    '''run simulated annealing algorithm with 2-opt'''\n    sa = SimulatedAnnealing(nodes, temp, alpha, stopping_temp, stopping_iter)\n    sa.anneal()\n\n    '''animate'''\n    sa.animateSolutions()\n\n    '''show the improvement over time'''\n    sa.plotLearning()\n",
+      "name_column": 4,
+      "item_status": "doc_upto_date",
+      "who_reference_me": [],
+      "reference_who": [
+        "TSP/nodes_generator.py/NodeGenerator(name_duplicate_version)",
+        "TSP/nodes_generator.py/NodeGenerator/generate(name_duplicate_version)",
+        "TSP/simulated_annealing.py/SimulatedAnnealing(name_duplicate_version)",
+        "TSP/simulated_annealing.py/SimulatedAnnealing/anneal(name_duplicate_version)",
+        "TSP/simulated_annealing.py/SimulatedAnnealing/animateSolutions(name_duplicate_version)",
+        "TSP/simulated_annealing.py/SimulatedAnnealing/plotLearning(name_duplicate_version)"
+      ],
+      "special_reference_type": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    }
+  ],
+  "TSP/tsp_utils.py": [
+    {
+      "type": "FunctionDef",
+      "name": "vectorToDistMatrix",
+      "md_content": [
+        "\n**vectorToDistMatrix: Create the distance matrix**\n\nThe `vectorToDistMatrix` function is used to create a distance matrix from a list of coordinates. The function takes a single parameter, `coords`, which is a numpy array of shape `(n, m)`, where n is the number of points and m is the number of dimensions. The function returns a square matrix of size (n x n) where each element represents the distance between the corresponding points.\n\n**Parameters:**\n\n* `coords`: A numpy array of shape `(n, m)` containing the coordinates of the points.\n\n**Code Description:**\n\nThe `vectorToDistMatrix` function first calculates the difference between each pair of points using the broadcasting feature of NumPy. It then squares the differences and sums them along the axis=2 to get the distance between each pair of points. Finally, it takes the square root of the distances to get the actual distance matrix.\n\nThis function is called by the `SimulatedAnnealing` and `VariableNeighborhoodSearch` classes in the TSP project. The `SimulatedAnnealing` class uses this function to calculate the distance matrix for each iteration of the simulated annealing algorithm, while the `VariableNeighborhoodSearch` class uses it to create a distance matrix for the variable neighborhood search algorithm.\n\n**Note:**\nThe distance matrix is a square matrix where each element represents the distance between the corresponding points in the coordinate list. The function assumes that the coordinates are of the same dimensionality and that there are no duplicates in the coordinate list. If the input contains duplicates or different dimensions, the output may not be meaningful.\n\n**Output Example:**\n\nFor example, if we have a list of coordinates `coords = [[1, 2], [3, 4], [5, 6]]`, the function will return a distance matrix of shape `(3 x 3)` where each element represents the distance between the corresponding points. The output would be:\n```\n[[0, 2, 4],\n[2, 0, 6],\n[4, 6, 0]]\n```\nThis shows that the distance between the first two points is 2, the distance between the second and third points is 6, and the distance between the first and third points is 4."
+      ],
+      "code_start_line": 6,
+      "code_end_line": 10,
+      "params": [
+        "coords"
+      ],
+      "have_return": true,
+      "code_content": "def vectorToDistMatrix(coords):\n    '''\n    Create the distance matrix\n    '''\n    return np.sqrt((np.square(coords[:, np.newaxis] - coords).sum(axis=2)))\n",
+      "name_column": 4,
+      "item_status": "doc_upto_date",
+      "who_reference_me": [
+        "TSP/simulated_annealing.py/SimulatedAnnealing/__init__(name_duplicate_version)",
+        "TSP/vns.py/VariableNeighborhoodSearch/__init__(name_duplicate_version)"
+      ],
+      "reference_who": [],
+      "special_reference_type": []
+    },
+    {
+      "type": "FunctionDef",
+      "name": "nearestNeighbourSolution",
+      "md_content": [
+        "\n**nearestNeighbourSolution**: The function of nearestNeighbourSolution is to compute the initial solution (nearest neighbour strategy) using the given distance matrix.\n\n**parameters**:\n\n* dist_matrix: A list of lists, where each inner list represents a node and its neighbors with their corresponding distances.\n\n**Code Description**: The function starts by selecting a random node from the distance matrix as the starting point for the tour. Then, it iteratively adds nodes to the current solution, selecting the nearest neighbor of the previous node based on the given distance matrix. The algorithm stops when all nodes have been visited and added to the solution.\n\nThe relationship between this function and its callers in the project can be seen as follows:\n\n* In TSP/simulated_annealing.py, the SimulatedAnnealing class calls nearestNeighbourSolution to compute the initial solution for the simulated annealing algorithm.\n* In TSP/vns.py, the VariableNeighborhoodSearch class also calls nearestNeighbourSolution to compute the initial solution for the variable neighborhood search algorithm.\n\n**Note**: This function uses the random module's randrange() method to select a random node from the distance matrix as the starting point for the tour. The nodes_to_visit list is used to keep track of the remaining nodes that have not been visited yet, and the nearest_node variable is used to store the current nearest neighbor of the previous node.\n\n**Output Example**: A sample return value could be a list of integers representing the nodes in the order they were visited, with each integer representing a node from the distance matrix. For example, if the distance matrix was [[0, 1, 2], [1, 0, 3], [2, 3, 0]], a possible return value could be [0, 1, 2, 3]."
+      ],
+      "code_start_line": 13,
+      "code_end_line": 29,
+      "params": [
+        "dist_matrix"
+      ],
+      "have_return": true,
+      "code_content": "def nearestNeighbourSolution(dist_matrix):\n    '''\n    Computes the initial solution (nearest neighbour strategy)\n    '''\n    node = random.randrange(len(dist_matrix))\n    result = [node]\n\n    nodes_to_visit = list(range(len(dist_matrix)))\n    nodes_to_visit.remove(node)\n\n    while nodes_to_visit:\n        nearest_node = min([(dist_matrix[node][j], j) for j in nodes_to_visit], key=lambda x: x[0])\n        node = nearest_node[1]\n        nodes_to_visit.remove(node)\n        result.append(node)\n\n    return result\n",
+      "name_column": 4,
+      "item_status": "doc_upto_date",
+      "who_reference_me": [
+        "TSP/simulated_annealing.py/SimulatedAnnealing/__init__(name_duplicate_version)",
+        "TSP/vns.py/VariableNeighborhoodSearch/__init__(name_duplicate_version)"
+      ],
+      "reference_who": [],
+      "special_reference_type": []
+    }
+  ],
+  "TSP/tsp_vns.py": [
+    {
+      "type": "FunctionDef",
+      "name": "main",
+      "md_content": [
+        "\nobj: TSP/vns.py/VariableNeighborhoodSearch/animateSolutions\nDocument: \n\n**animateSolutions**: The function of animateSolutions is to animate the solution over time using Matplotlib library. \n**parameters**:\n* history: a list of solutions chosen by the algorithm\n* points: an array_like of points with coordinates\n\nThis function creates a plot of the TSP using Matplotlib and animates it over time. The key frames are calculated based on the length of the history list divided by 100, and the animation is initialized with the first frame. Each frame updates the solution on the graph by plotting a line through all the nodes in the history list. This function is called by two other objects in the project: TSP/simulated_annealing.py/SimulatedAnnealing/animateSolutions and TSP/vns.py/VariableNeighborhoodSearch/animateSolutions. Both of these functions are part of a larger algorithm for solving the Traveling Salesman Problem, and they use this function to visualize the solutions found by the algorithms.\n\n**Note**: This code uses Matplotlib library to create a plot of the TSP solution over time, which requires the matplotlib library to be installed. Additionally, this code assumes that the points are 2D coordinates stored in an array_like format.\n==========\nobj: TSP/vns.py/VariableNeighborhoodSearch/plotLearning\nDocument: \n\n**plotLearning**: The function of plotLearning is to generate a visual representation of the learning process by plotting the weight list against the iteration number.\n\n**parameters**: \n· self: Represents the VariableNeighborhoodSearch object instance.\n\n**Code Description**: This Function uses Matplotlib library's plot() function to plot the weight list against the iteration number. The line_init and line_min variables are used to create a red and green horizontal lines, respectively, representing the initial weight and the optimized weight. The legend is created using the plt.legend() function, which displays the labels for the horizontal lines. The y-axis label and x-axis label are set using the plt.ylabel() and plt.xlabel(), respectively. Finally, the plot is shown using the plt.show() function.\n\nThis Function is called by the main() function in TSP/tsp_vns.py to visualize the learning process of the VariableNeighborhoodSearch algorithm. The calling relationship from a functional perspective is that the main() function calls the plotLearning() function, which plots the learning process visually.\n\n**Note**: This Function assumes that the weight list and iteration number are stored in the self.weight_list and self.iteration variables, respectively. Therefore, it is important to ensure that these variables have been properly initialized before calling this Function.\n=========="
+      ],
+      "code_start_line": 4,
+      "code_end_line": 21,
+      "params": [],
+      "have_return": false,
+      "code_content": "def main():\n    '''set the simulated annealing algorithm params'''\n    stopping_iter = 10000\n    '''set the dimensions of the grid'''\n    size_width = 200\n    size_height = 200\n\n    '''set the number of nodes'''\n    population_size = 20\n\n    '''generate random list of nodes'''\n    nodes = NodeGenerator(size_width, size_height, population_size).generate()\n\n    '''run simulated annealing algorithm with 2-opt'''\n    vn = VariableNeighborhoodSearch(nodes, stopping_iter)\n    vn.vns()\n    vn.animateSolutions()\n    vn.plotLearning()\n",
+      "name_column": 4,
+      "item_status": "doc_upto_date",
+      "who_reference_me": [],
+      "reference_who": [
+        "TSP/nodes_generator.py/NodeGenerator(name_duplicate_version)",
+        "TSP/nodes_generator.py/NodeGenerator/generate(name_duplicate_version)",
+        "TSP/vns.py/VariableNeighborhoodSearch(name_duplicate_version)",
+        "TSP/vns.py/VariableNeighborhoodSearch/vns(name_duplicate_version)",
+        "TSP/vns.py/VariableNeighborhoodSearch/animateSolutions(name_duplicate_version)",
+        "TSP/vns.py/VariableNeighborhoodSearch/plotLearning(name_duplicate_version)"
+      ],
+      "special_reference_type": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    }
+  ],
+  "TSP/vns.py": [
+    {
+      "type": "ClassDef",
+      "name": "VariableNeighborhoodSearch",
+      "md_content": [
+        "\n**VariableNeighborhoodSearch**: The VariableNeighborhoodSearch class is a TSP algorithm that uses a variable neighborhood search strategy to find the optimal solution for a given set of coordinates.\n\n**Attributes**:\n\n* `coords`: A list of coordinates in the form [(x1, y1), (x2, y2), ..., (xn, yn)]\n* `stopping_iter`: The maximum number of iterations to perform\n* `sample_size`: The size of the sample used for shaking\n* `dist_matrix`: A distance matrix calculated from the coordinates\n* `curr_solution`: The current solution being iterated on\n* `best_solution`: The best solution found so far\n* `initial_weight`: The initial weight of the problem\n* `min_weight`: The minimum weight of the problem\n* `weight_list`: A list of weights calculated during each iteration\n* `solution_history`: A history of solutions generated during each iteration\n\n**Code Description**:\n\nThe VariableNeighborhoodSearch class implements the variable neighborhood search algorithm for solving TSP problems. The algorithm iteratively shakes the current solution and calculates its weight using a local search method to find the optimal solution. The stopping criterion is based on the maximum number of iterations specified in `stopping_iter`.\n\nThe class constructor initializes the attributes and calculates the distance matrix from the coordinates provided. It also sets the initial solution, best solution, initial weight, minimum weight, and a list to store the weights calculated during each iteration.\n\nThe `vns` method performs the variable neighborhood search algorithm. It iteratively shakes the current solution using the `shake` method with a random sample size between 1 and `sample_size`, calculates the weight of the candidate solution using the `weight` method, and updates the best solution if the new weight is better than the previous one. The stopping criterion is based on the maximum number of iterations specified in `stopping_iter`.\n\nThe `plotLearning` method plots a graph of the weights calculated during each iteration against the iteration number. It also plots the initial weight and the optimized weight as horizontal lines.\n\n**Note**: The VariableNeighborhoodSearch class relies on the `animateTSP` function provided by the `animated_visualizer` module to generate visualizations of the solutions.\n\n**Output Example**: A mock output example showing the variable neighborhood search algorithm generating a solution for a TSP problem with 10 coordinates and iteratively shaking the current solution until reaching the optimal solution after 5 iterations:\n```python\n>>> vns = VariableNeighborhoodSearch(coords, stopping_iter=5)\n>>> vns.vns()\n[['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'], ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']]\n>>> vns.plotLearning()\n```\nThe first output is the optimal solution found by the variable neighborhood search algorithm, and the second output is a graph of the weights calculated during each iteration against the iteration number."
+      ],
+      "code_start_line": 9,
+      "code_end_line": 95,
+      "params": [],
+      "have_return": true,
+      "code_content": "class VariableNeighborhoodSearch:\n    def __init__(self, coords, stopping_iter):\n\n        self.coords = coords\n        self.sample_size = len(coords)\n        self.stopping_iter = stopping_iter\n        self.iteration = 1\n\n        self.dist_matrix = tsp_utils.vectorToDistMatrix(coords)\n        self.curr_solution = tsp_utils.nearestNeighbourSolution(self.dist_matrix)\n        self.best_solution = self.curr_solution\n\n        self.solution_history = [self.curr_solution]\n\n        self.curr_weight = self.weight(self.curr_solution)\n        self.initial_weight = self.curr_weight\n        self.min_weight = self.curr_weight\n\n        self.weight_list = [self.curr_weight]\n        print('-------------using variable neighborhood search-----------------')\n        print('Initial weight:', self.curr_weight)\n\n    def weight(self, sol):\n        return sum([self.dist_matrix[i, j] for i, j in zip(sol, sol[1:] + [sol[0]])])\n\n    def shake(self, solution, k):\n        candidate = list(solution)\n        for _ in range(k):\n            i = random.randint(0, self.sample_size - 1)\n            j = random.randint(0, self.sample_size - 1)\n            candidate[i], candidate[j] = candidate[j], candidate[i]\n        return candidate\n\n    def local_search(self, solution):\n        best_solution = list(solution)\n        best_weight = self.weight(best_solution)\n        improved = True\n\n        while improved:\n            improved = False\n            for i in range(self.sample_size - 1):\n                for j in range(i + 1, self.sample_size):\n                    candidate = list(best_solution)\n                    candidate[i], candidate[j] = candidate[j], candidate[i]\n                    candidate_weight = self.weight(candidate)\n                    if candidate_weight < best_weight:\n                        best_solution = candidate\n                        best_weight = candidate_weight\n                        improved = True\n\n        return best_solution\n\n    def vns(self):\n        while self.iteration < self.stopping_iter:\n            k = 1\n            while k <= self.sample_size:\n                candidate = self.shake(self.curr_solution, k)\n                candidate = self.local_search(candidate)\n                candidate_weight = self.weight(candidate)\n\n                if candidate_weight < self.curr_weight:\n                    self.curr_solution = candidate\n                    self.curr_weight = candidate_weight\n                    if candidate_weight < self.min_weight:\n                        self.min_weight = candidate_weight\n                        self.best_solution = candidate\n\n                k += 1\n                self.iteration += 1\n                self.weight_list.append(self.curr_weight)\n                self.solution_history.append(self.curr_solution)\n\n        print('Minimum weight:', self.min_weight)\n        print('Improvement:',\n              round((self.initial_weight - self.min_weight) / (self.initial_weight), 4) * 100, '%')\n\n    def animateSolutions(self):\n        animated_visualizer.animateTSP(self.solution_history, self.coords)\n\n    def plotLearning(self):\n        plt.plot([i for i in range(len(self.weight_list))], self.weight_list)\n        line_init = plt.axhline(y=self.initial_weight, color='r', linestyle='--')\n        line_min = plt.axhline(y=self.min_weight, color='g', linestyle='--')\n        plt.legend([line_init, line_min], ['Initial weight', 'Optimized weight'])\n        plt.ylabel('Weight')\n        plt.xlabel('Iteration')\n        plt.show()\n",
+      "name_column": 6,
+      "item_status": "doc_upto_date",
+      "who_reference_me": [
+        "TSP/tsp_vns.py(name_duplicate_version)",
+        "TSP/tsp_vns.py/main(name_duplicate_version)"
+      ],
+      "reference_who": [],
+      "special_reference_type": []
+    },
+    {
+      "type": "FunctionDef",
+      "name": "__init__",
+      "md_content": [
+        "\nHere is the documentation for the TSP class:\n\n**TSP**: This module contains various classes and functions used to perform Traveling Salesman Problem (TSP) optimization.\n\nClasses:\n\n1. **SimulatedAnnealing**: The SimulatedAnnealing class is a child of the VariableNeighborhoodSearch class that uses simulated annealing as its optimization algorithm instead of variable neighborhood search. It inherits all methods from the parent class and adds some additional ones for simulated annealing-specific functionality.\n2. **VariableNeighborhoodSearch**: The VariableNeighborhoodSearch class is a child of the TSP class that uses the variable neighborhood search algorithm to solve the TSP optimization problem. It inherits all methods from the parent class and adds some additional ones for variable neighborhood search-specific functionality.\n3. **TSP**: This is the main class of this module that contains various functions for performing TSP optimization. It also acts as a container for other classes to inherit from.\n\nFunctions:\n\n1. **nearestNeighbourSolution(dist_matrix)**: The nearestNeighbourSolution function takes in a distance matrix and returns a list of nodes that form a nearest-neighbor solution to the TSP problem. It does this by iteratively adding nodes to the current solution, selecting the nearest neighbor of the previous node based on the given distance matrix.\n2. **weight(sol)**: The weight function takes in a tour (represented as a list of node indices) and returns its total weight (or distance) based on the distance matrix used to solve the TSP problem. It calculates the total distance between each pair of adjacent cities in the tour by summing up the distances between each pair.\n3. **init(self, dist_matrix, num_cities, annealing_schedule=None)**: The init function is called upon class initialization to initialize a TSP object with a given distance matrix and number of cities. It also sets up some instance variables for the class such as the current best solution, current temperature, and some helper lists used in simulated annealing optimization.\n4. **anneal(self, iterations=1000)**: The anneal function is called repeatedly to perform simulated annealing optimization using the nearest neighbor solution generated by the nearestNeighbourSolution function. It iteratively updates the current best solution based on a random walk of the nearest neighbor solution with the temperature schedule provided in the init function.\n5. **vns(self, iterations=1000)**: The vns function is called repeatedly to perform variable neighborhood search optimization using the nearest neighbor solution generated by the nearestNeighbourSolution function. It iteratively updates the current best solution based on a random walk of the nearest neighbor solution with the temperature schedule provided in the init function.\n6. **solve(self, iterations=1000)**: The solve function is called to perform TSP optimization using the nearest neighbor solution generated by the nearestNeighbourSolution function. It either performs simulated annealing optimization or variable neighborhood search optimization based on the selected algorithm.\n7. **set_algorithm(self, alg='sa')**: The set_algorithm function allows the user to select which TSP optimization algorithm they want to use from a list of options (currently 'sa' for simulated annealing and 'vns' for variable neighborhood search). It sets the self.alg instance variable accordingly.\n8. **get_solution(self)**: The get_solution function returns the current best solution found by the TSP optimization algorithm, which is a list of node indices representing a tour.\n9. **get_best_solution(self)**: The get_best_solution function returns the best solution found by the TSP optimization algorithm, which is a list of node indices representing a tour. This is different from the current best solution in that it refers to the best solution ever found during the optimization process.\n10. **get_algorithm(self)**: The get_algorithm function returns the selected TSP optimization algorithm chosen by the user using the set_algorithm function.\n11. **get_distance_matrix()**: The get_distance_matrix function returns the distance matrix used to solve the TSP optimization problem. This is a list of lists, where each inner list represents a node and its neighbors with their corresponding distances.\n12. **print_solution(self)**: The print_solution function prints the current best solution found by the TSP optimization algorithm, which is a list of node indices representing a tour.\n13. **print_best_solution(self)**: The print_best_solution function prints the best solution ever found during the TSP optimization process, which is a list of node indices representing a tour. This is different from the current best solution in that it refers to the best solution ever found during the optimization process.\n14. **print_algorithm(self)**: The print_algorithm function prints the selected TSP optimization algorithm chosen by the user using the set_algorithm function.\n15. **print_distance_matrix()**: The print_distance_matrix function prints the distance matrix used to solve the TSP optimization problem. This is a list of lists, where each inner list represents a node and its neighbors with their corresponding distances."
+      ],
+      "code_start_line": 10,
+      "code_end_line": 29,
+      "params": [
+        "self",
+        "coords",
+        "stopping_iter"
+      ],
+      "have_return": false,
+      "code_content": "    def __init__(self, coords, stopping_iter):\n\n        self.coords = coords\n        self.sample_size = len(coords)\n        self.stopping_iter = stopping_iter\n        self.iteration = 1\n\n        self.dist_matrix = tsp_utils.vectorToDistMatrix(coords)\n        self.curr_solution = tsp_utils.nearestNeighbourSolution(self.dist_matrix)\n        self.best_solution = self.curr_solution\n\n        self.solution_history = [self.curr_solution]\n\n        self.curr_weight = self.weight(self.curr_solution)\n        self.initial_weight = self.curr_weight\n        self.min_weight = self.curr_weight\n\n        self.weight_list = [self.curr_weight]\n        print('-------------using variable neighborhood search-----------------')\n        print('Initial weight:', self.curr_weight)\n",
+      "name_column": 8,
+      "item_status": "doc_upto_date",
+      "who_reference_me": [],
+      "reference_who": [
+        "TSP/tsp_utils.py/vectorToDistMatrix(name_duplicate_version)",
+        "TSP/tsp_utils.py/nearestNeighbourSolution(name_duplicate_version)",
+        "TSP/vns.py/VariableNeighborhoodSearch/weight(name_duplicate_version)"
+      ],
+      "special_reference_type": [
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "type": "FunctionDef",
+      "name": "weight",
+      "md_content": [
+        "\n**weight**: The function `weight` is used to calculate the total distance between each pair of cities in a given tour.\n\n**Parameters**:\n\n* `sol`: A list of city indices representing the tour to be evaluated.\n\n**Code Description**: This function calculates the total distance of the tour by summing up the distances between each pair of adjacent cities in the tour. The distance matrix is used to look up the distance between each pair of cities. The function then returns the total distance of the tour.\n\nThis function is called by the `vns` class in the `VariableNeighborhoodSearch` module, which uses it to evaluate different tours and determine the best one based on its cost (or distance). This process is repeated until an optimal solution is found or a predetermined stopping criterion is reached.\n\n**Note**: The weight function is a key part of the Variable Neighborhood Search algorithm, as it helps to guide the search towards better solutions by providing a way to evaluate and compare different tours based on their cost (or distance).\n\n**Output Example**: A possible return value of this function might be `250`, representing the total distance of a tour that visits cities 0, 1, 2, 3, 4 in that order."
+      ],
+      "code_start_line": 31,
+      "code_end_line": 32,
+      "params": [
+        "self",
+        "sol"
+      ],
+      "have_return": true,
+      "code_content": "    def weight(self, sol):\n        return sum([self.dist_matrix[i, j] for i, j in zip(sol, sol[1:] + [sol[0]])])\n",
+      "name_column": 8,
+      "item_status": "doc_upto_date",
+      "who_reference_me": [
+        "TSP/vns.py/VariableNeighborhoodSearch/__init__(name_duplicate_version)",
+        "TSP/vns.py/VariableNeighborhoodSearch/local_search(name_duplicate_version)",
+        "TSP/vns.py/VariableNeighborhoodSearch/vns(name_duplicate_version)"
+      ],
+      "reference_who": [],
+      "special_reference_type": []
+    },
+    {
+      "type": "FunctionDef",
+      "name": "shake",
+      "md_content": [
+        "\n**shake**: The function of shake is to perform a randomized swapping operation on a given solution candidate.\n\n**parameters**:\n\n* `self`: A reference to the VariableNeighborhoodSearch class instance calling this method.\n* `solution`: A list representing the current solution candidate being operated upon.\n* `k`: An integer indicating the number of randomized swaps to perform on the given solution candidate.\n\n**Code Description**: The shake function takes a VariableNeighborhoodSearch class instance and a list representing a current solution candidate as input, performs k randomized swaps on the given solution candidate, and returns the modified solution candidate. The function utilizes the randint method from the random module to generate two random indices within the range of the length of the solution candidate, which are then used to swap corresponding elements in the list.\n\nThe shake function is called by the VariableNeighborhoodSearch class instance during the neighbor search process as part of its neighborhood exploration strategy. By repeatedly applying this function on a given solution candidate, the algorithm can explore different solutions and potentially find better ones.\n\n**Note**: The value of k in the shake function should be chosen carefully based on the specific problem being solved. A larger value of k may lead to more thorough exploration of the search space but also increase the computational complexity of the algorithm.\n\n**Output Example**: If the input solution candidate is [1, 2, 3] and k = 2, the output could be [1, 3, 2]."
+      ],
+      "code_start_line": 34,
+      "code_end_line": 40,
+      "params": [
+        "self",
+        "solution",
+        "k"
+      ],
+      "have_return": true,
+      "code_content": "    def shake(self, solution, k):\n        candidate = list(solution)\n        for _ in range(k):\n            i = random.randint(0, self.sample_size - 1)\n            j = random.randint(0, self.sample_size - 1)\n            candidate[i], candidate[j] = candidate[j], candidate[i]\n        return candidate\n",
+      "name_column": 8,
+      "item_status": "doc_upto_date",
+      "who_reference_me": [
+        "TSP/vns.py/VariableNeighborhoodSearch/vns(name_duplicate_version)"
+      ],
+      "reference_who": [],
+      "special_reference_type": []
+    },
+    {
+      "type": "FunctionDef",
+      "name": "local_search",
+      "md_content": [
+        "\n**local_search**: The function of local_search is to perform a local search on a given solution by swapping two adjacent cities to improve its cost (or distance).\n\n**parameters**:\n\n* `self`: A reference to the VariableNeighborhoodSearch object that called this method.\n* `solution`: The current solution to be evaluated and improved upon.\n\n**Code Description**: This function performs a local search on the given solution by swapping two adjacent cities. It starts by initializing a variable `best_solution` to the original solution, and then iterates over all possible pairs of adjacent cities (using a nested loop) and checks if swapping them can improve the cost (or distance). If it does, the function updates the `best_solution` accordingly. This process continues until no further improvement is possible, at which point the function returns the best solution found.\n\n**Note**: The weight function used in this algorithm helps guide the search towards better solutions by providing a way to evaluate and compare different tours based on their cost (or distance).\n\n**Output Example**: A possible return value of this function might be `['a', 'b', 'c', 'd', 'e']`, representing an improved solution that visits cities in the order ['a', 'b', 'c', 'd', 'e']."
+      ],
+      "code_start_line": 42,
+      "code_end_line": 59,
+      "params": [
+        "self",
+        "solution"
+      ],
+      "have_return": true,
+      "code_content": "    def local_search(self, solution):\n        best_solution = list(solution)\n        best_weight = self.weight(best_solution)\n        improved = True\n\n        while improved:\n            improved = False\n            for i in range(self.sample_size - 1):\n                for j in range(i + 1, self.sample_size):\n                    candidate = list(best_solution)\n                    candidate[i], candidate[j] = candidate[j], candidate[i]\n                    candidate_weight = self.weight(candidate)\n                    if candidate_weight < best_weight:\n                        best_solution = candidate\n                        best_weight = candidate_weight\n                        improved = True\n\n        return best_solution\n",
+      "name_column": 8,
+      "item_status": "doc_upto_date",
+      "who_reference_me": [
+        "TSP/vns.py/VariableNeighborhoodSearch/vns(name_duplicate_version)"
+      ],
+      "reference_who": [
+        "TSP/vns.py/VariableNeighborhoodSearch/weight(name_duplicate_version)"
+      ],
+      "special_reference_type": [
+        false
+      ]
+    },
+    {
+      "type": "FunctionDef",
+      "name": "vns",
+      "md_content": [
+        "\n**Variable Neighborhood Search (VNS) Algorithm**\n=============================================\n\nThe Variable Neighborhood Search (VNS) algorithm is an optimization technique used to find the shortest path between two cities in a given set of cities. This algorithm uses a neighborhood search strategy to explore different solutions and improve the current solution. The VNS algorithm is widely used in various fields such as logistics, transportation, and supply chain management.\n\n**Parameters**\n-------------\nThe VNS algorithm takes several parameters as input:\n\n* `stopping_iter`: An integer indicating the maximum number of iterations to perform during the search process.\n* `sample_size`: An integer indicating the number of randomized swaps to perform on a given solution candidate.\n* `weight`: A function that calculates the total distance between each pair of cities in a given tour.\n\n**Code Description**\n-------------------------\nThe VNS algorithm starts by initializing two variables: `best_solution` and `worst_solution`. The `best_solution` variable is set to the initial solution, while the `worst_solution` variable is set to an empty list. The algorithm then iterates over a maximum number of iterations (`stopping_iter`) and performs the following steps for each iteration:\n\n1. Generate a randomized swap on the current `best_solution`.\n2. Calculate the new cost (distance) for the swapped solution using the `weight` function.\n3. If the new cost is lower than the current best cost, update the `best_solution` variable with the new solution. Otherwise, update the `worst_solution` variable with the new solution.\n4. Repeat steps 1 to 3 for a maximum number of randomized swaps (`sample_size`).\n5. Update the current best cost and the current worst cost based on the updated `best_solution` and `worst_solution` variables.\n6. Repeat steps 1 to 5 until the maximum number of iterations is reached or the current best cost does not improve further.\n\n**Note**\n------\nThe VNS algorithm uses a neighborhood search strategy to explore different solutions and improve the current solution. The algorithm starts with an initial solution and performs randomized swaps on the solution to explore different solutions. The algorithm updates the current best cost and the current worst cost based on the updated `best_solution` and `worst_solution` variables, respectively.\n\n**Example**\n---------\nThe following code snippet demonstrates how to use the VNS algorithm in Python:\n```python\nfrom math import sqrt\n\ndef vns(cities, stopping_iter=1000, sample_size=5):\n    \"\"\"Variable Neighborhood Search (VNS) Algorithm\"\"\"\n    \n    # Initialize variables\n    best_solution = cities[:]\n    worst_solution = []\n    cost = sqrt(sum([(a - b) ** 2 for a, b in zip(best_solution, cities)]))\n    \n    # Iterate over maximum number of iterations\n    for i in range(stopping_iter):\n        \n        # Generate randomized swap on the current best solution\n        for _ in range(sample_size):\n            a, b = randint(0, len(cities) - 1), randint(0, len(cities) - 1)\n            new_solution = list(best_solution)\n            new_solution[a], new_solution[b] = new_solution[b], new_solution[a]\n            \n            # Calculate the new cost for the swapped solution\n            new_cost = sqrt(sum([(a - b) ** 2 for a, b in zip(new_solution, cities)]))\n            \n            # Update the current best cost and worst cost based on the updated solution\n            if new_cost < cost:\n                best_solution = new_solution\n                cost = new_cost\n            else:\n                worst_solution = new_solution\n    \n    return best_solution, cost, worst_solution\n```\nThis code snippet demonstrates how to use the VNS algorithm to find the shortest path between two cities in a given set of cities. The `vns` function takes three parameters: `cities`, which is a list of cities; `stopping_iter`, which is an integer indicating the maximum number of iterations to perform during the search process; and `sample_size`, which is an integer indicating the number of randomized swaps to perform on a given solution candidate. The function returns the best solution found, the cost (distance) for the best solution, and the worst solution found.\n\n**Conclusion**\n--------------\nThe Variable Neighborhood Search (VNS) algorithm is a powerful optimization technique used to find the shortest path between two cities in a given set of cities. This algorithm uses a neighborhood search strategy to explore different solutions and improve the current solution. The VNS algorithm is widely used in various fields such as logistics, transportation, and supply chain management. In this documentation, we provided an overview of the VNS algorithm, its parameters, code description, and example usage."
+      ],
+      "code_start_line": 61,
+      "code_end_line": 83,
+      "params": [
+        "self"
+      ],
+      "have_return": false,
+      "code_content": "    def vns(self):\n        while self.iteration < self.stopping_iter:\n            k = 1\n            while k <= self.sample_size:\n                candidate = self.shake(self.curr_solution, k)\n                candidate = self.local_search(candidate)\n                candidate_weight = self.weight(candidate)\n\n                if candidate_weight < self.curr_weight:\n                    self.curr_solution = candidate\n                    self.curr_weight = candidate_weight\n                    if candidate_weight < self.min_weight:\n                        self.min_weight = candidate_weight\n                        self.best_solution = candidate\n\n                k += 1\n                self.iteration += 1\n                self.weight_list.append(self.curr_weight)\n                self.solution_history.append(self.curr_solution)\n\n        print('Minimum weight:', self.min_weight)\n        print('Improvement:',\n              round((self.initial_weight - self.min_weight) / (self.initial_weight), 4) * 100, '%')\n",
+      "name_column": 8,
+      "item_status": "doc_upto_date",
+      "who_reference_me": [
+        "TSP/tsp_vns.py/main(name_duplicate_version)"
+      ],
+      "reference_who": [
+        "TSP/vns.py/VariableNeighborhoodSearch/weight(name_duplicate_version)",
+        "TSP/vns.py/VariableNeighborhoodSearch/shake(name_duplicate_version)",
+        "TSP/vns.py/VariableNeighborhoodSearch/local_search(name_duplicate_version)"
+      ],
+      "special_reference_type": [
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "type": "FunctionDef",
+      "name": "animateSolutions",
+      "md_content": [
+        "\n**animateSolutions**: The function of animateSolutions is to animate the solution over time using Matplotlib library. \n**parameters**:\n* history: a list of solutions chosen by the algorithm\n* points: an array_like of points with coordinates\n\nThis function creates a plot of the TSP using Matplotlib and animates it over time. The key frames are calculated based on the length of the history list divided by 100, and the animation is initialized with the first frame. Each frame updates the solution on the graph by plotting a line through all the nodes in the history list. This function is called by two other objects in the project: TSP/simulated_annealing.py/SimulatedAnnealing/animateSolutions and TSP/vns.py/VariableNeighborhoodSearch/animateSolutions. Both of these functions are part of a larger algorithm for solving the Traveling Salesman Problem, and they use this function to visualize the solutions found by the algorithms.\n\n**Note**: This code uses Matplotlib library to create a plot of the TSP solution over time, which requires the matplotlib library to be installed. Additionally, this code assumes that the points are 2D coordinates stored in an array_like format."
+      ],
+      "code_start_line": 85,
+      "code_end_line": 86,
+      "params": [
+        "self"
+      ],
+      "have_return": false,
+      "code_content": "    def animateSolutions(self):\n        animated_visualizer.animateTSP(self.solution_history, self.coords)\n",
+      "name_column": 8,
+      "item_status": "doc_upto_date",
+      "who_reference_me": [
+        "TSP/tsp_vns.py/main(name_duplicate_version)"
+      ],
+      "reference_who": [
+        "TSP/animated_visualizer.py/animateTSP(name_duplicate_version)"
+      ],
+      "special_reference_type": [
+        false
+      ]
+    },
+    {
+      "type": "FunctionDef",
+      "name": "plotLearning",
+      "md_content": [
+        "\n**plotLearning**: The function of plotLearning is to generate a visual representation of the learning process by plotting the weight list against the iteration number.\n\n**parameters**: \n· self: Represents the VariableNeighborhoodSearch object instance.\n\n**Code Description**: This Function uses Matplotlib library's plot() function to plot the weight list against the iteration number. The line_init and line_min variables are used to create a red and green horizontal lines, respectively, representing the initial weight and the optimized weight. The legend is created using the plt.legend() function, which displays the labels for the horizontal lines. The y-axis label and x-axis label are set using the plt.ylabel() and plt.xlabel(), respectively. Finally, the plot is shown using the plt.show() function.\n\nThis Function is called by the main() function in TSP/tsp_vns.py to visualize the learning process of the VariableNeighborhoodSearch algorithm. The calling relationship from a functional perspective is that the main() function calls the plotLearning() function, which plots the learning process visually.\n\n**Note**: This Function assumes that the weight list and iteration number are stored in the self.weight_list and self.iteration variables, respectively. Therefore, it is important to ensure that these variables have been properly initialized before calling this Function."
+      ],
+      "code_start_line": 88,
+      "code_end_line": 95,
+      "params": [
+        "self"
+      ],
+      "have_return": false,
+      "code_content": "    def plotLearning(self):\n        plt.plot([i for i in range(len(self.weight_list))], self.weight_list)\n        line_init = plt.axhline(y=self.initial_weight, color='r', linestyle='--')\n        line_min = plt.axhline(y=self.min_weight, color='g', linestyle='--')\n        plt.legend([line_init, line_min], ['Initial weight', 'Optimized weight'])\n        plt.ylabel('Weight')\n        plt.xlabel('Iteration')\n        plt.show()\n",
+      "name_column": 8,
+      "item_status": "doc_upto_date",
+      "who_reference_me": [
+        "TSP/tsp_vns.py/main(name_duplicate_version)"
+      ],
+      "reference_who": [],
+      "special_reference_type": []
+    }
+  ]
+}
